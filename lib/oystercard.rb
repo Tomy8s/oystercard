@@ -1,18 +1,19 @@
 require_relative 'journey'
 require_relative 'station'
+require_relative 'fare'
 
 class Oystercard
-  attr_reader :balance, :entry_station, :exit_station
-  attr_accessor :journeys
+
+  attr_reader :balance, :entry_station, :exit_station, :history
 
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
   MINIMUM_FARE = 1
   PENALTY_FARE = 6
 
-  def initialize(balance = 0)
-    @balance = balance
-    @journeys = []
+  def initialize
+    @balance = 0
+    @history = []
     @user_touch_in = false
   end
 
@@ -25,28 +26,24 @@ class Oystercard
     fail "Insufficient funds" if @balance < MINIMUM_BALANCE
     did_user_double_touch_in
     create_journey(entry_station)
-    @user_touch_in = true
     @journey.in_journey?
   end
 
   def touch_out(exit_station)
     user_did_not_touch_in
     @journey.exit_station = exit_station
-    deduct(calculate_fare)
+    deduct(fare)
     add_journey_to_history
     @journey.in_journey?
   end
 
   private
 
-  def calculate_fare
-    if @journey.entry_station == nil || @journey.exit_station == nil
-      1
-    else
-      (@journey.entry_station.zone - @journey.exit_station.zone).abs
-    end
+  def fare
+    calculate_fare = Fare.new(@journey)
+    calculate_fare.fare
   end
-
+  
   def add_journey_to_history
     add_to_array
     reset_touch_in
@@ -60,6 +57,7 @@ class Oystercard
 
   def create_journey(entry_station)
     @journey = Journey.new(entry_station)
+    @user_touch_in = true
   end
 
   def user_did_not_touch_in
@@ -75,7 +73,7 @@ class Oystercard
 
   def add_to_array
     @journey.add_journey
-    @journeys << @journey.journey
+    @history << @journey.journey
   end
 
   def deduct(amount)

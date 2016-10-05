@@ -14,7 +14,7 @@ describe Oystercard do
       expect(subject.entry_station).to eq nil
     end
     it 'will contain zero journeys' do
-      expect(subject.journeys). to be_empty
+      expect(subject.history).to be_empty
     end
   end
 
@@ -44,7 +44,13 @@ describe Oystercard do
       it 'will set #in_journey? to true' do
         expect(subject.touch_in(entry_station)).to eq true
       end
+
+      it 'will raise an error is Insufficient funds' do
+        subject.touch_out(exit_station)
+        expect{ subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
+      end
     end
+
     describe '#touch_out' do
       it 'will set #in_journey? to false' do
         expect(subject.touch_out(exit_station)).to eq false
@@ -52,8 +58,13 @@ describe Oystercard do
       it 'a single journey will reduce balance by minimum fare' do
         expect {subject.touch_out(exit_station)}.to change {subject.balance}.by(-described_class::MINIMUM_FARE)
       end
+
+      it 'will add a journey to the history' do
+       subject.touch_out(exit_station)
+       expect(subject.history).not_to be_empty
     end
   end
+end
 
   context 'incorrect card usage' do
     let(:fare) { described_class::PENALTY_FARE + described_class::MINIMUM_FARE }

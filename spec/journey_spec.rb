@@ -3,13 +3,14 @@ require 'oystercard'
 
 describe Journey do
 
-  subject(:journey) {described_class.new(:entry_station)}
-  subject(:nil_test) {described_class.new(:entry_station)}
-  let(:card) { Oystercard.new }
-  let(:entry_station) { double(:station, :zone=>1) }
-  let(:exit_station) { double(:station, :zone=>2) }
+  subject(:no_arguments) {described_class.new}
+  subject(:journey)      {described_class.new(:entry_station)}
+  subject(:nil_test)     {described_class.new(:entry_station)}
+  let(:card)             { Oystercard.new }
+  let(:entry_station)    { double(:station, :zone=>1) }
+  let(:exit_station)     { double(:station, :zone=>2) }
 
-  describe 'initialization' do
+  describe '#initialization' do
     it 'will set #in_journey? to true' do
       expect(journey.in_journey?).to eq true
     end
@@ -18,9 +19,16 @@ describe Journey do
       expect(journey.entry_station).to be :entry_station
     end
 
-   end
+    it 'should have an empty has by default' do
+      expect(journey.journey).to be_empty
+    end
 
-   describe 'adding one journey to history' do
+    it 'should set entry station to nil if no arguments are passed' do
+      expect(no_arguments.entry_station).to be nil
+    end
+ end
+
+ describe '#add_journey' do
     let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
     before do
       card.top_up(Oystercard::MAXIMUM_BALANCE)
@@ -29,7 +37,7 @@ describe Journey do
     end
 
     it 'will create one journey' do
-      expect(card.journeys).to include journey
+      expect(card.history).to include journey
     end
   end
 
