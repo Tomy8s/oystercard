@@ -1,10 +1,13 @@
 class JourneyLog
-  def initialize(journey_log)
+
+  attr_reader :history
+
+  def initialize
+    @history = []
   end
 
-  def start(start_station)
+  def history(journey)
+    @history << journey
   end
 
-  def finish(finish_station)
-  end
 end
