@@ -1,83 +1,50 @@
 require 'oystercard'
 
 describe Oystercard do
-  subject(:oystercard) {described_class.new}
-  let(:entry_station) { double(:entry_station, :zone=>1) }
-  let(:exit_station) { double(:exit_station, :zone=>2) }
-  let(:journey) { {entry_station: entry_station, exit_station: exit_station} }
 
-  describe 'initialization' do
-    it 'has a default balance of 0' do
+let(:entry) { double(:station) }
+let(:exit) { double(:station) }
+
+  describe '#initialize' do
+    it 'starts with a balance of 0' do
       expect(subject.balance).to eq 0
-    end
-    it 'does not have a set starting station' do
-      expect(subject.entry_station).to eq nil
-    end
-    it 'will contain zero journeys' do
-      expect(subject.history).to be_empty
     end
   end
 
-  context 'top-up card' do
+  describe '#top_up' do
+    it 'adds to balance' do
+      expect{ subject.top_up(10) }.to change{ subject.balance }.by(10)
+    end
+    it 'rases and error when exceding MAXIMUM_BALANCE' do
+      expect{ subject.top_up(described_class::MAXIMUM_BALANCE + 1) }.to raise_error("Beyond limit of #{described_class::MAXIMUM_BALANCE}")
+    end
+  end
+
+  describe '#touch_in' do
+    it 'accepts a station as an argument' do
+      expect(subject).to respond_to(:touch_in).with(1).argument
+    end
+    it 'rases and error when funds low' do
+      expect{ subject.touch_in(entry) }.to raise_error('Insufficient balance')
+    end
+    it 'charges a penlty fare if touched in twice' do
+      subject.top_up(described_class::MAXIMUM_BALANCE)
+      subject.touch_in(entry)
+      expect{ subject.touch_in(entry) }.to change{ subject.balance }.by(-6)
+    end
+  end
+
+  describe '#touch_out' do
     before do
       subject.top_up(described_class::MAXIMUM_BALANCE)
     end
-    it 'allows a user to top-up their oystercard' do
-      expect(subject.balance).to eq described_class::MAXIMUM_BALANCE
+    it 'charges MINIMUM_FARE on completion of valid journy' do
+      subject.touch_in(entry)
+      expect{ subject.touch_out(exit) }.to change{ subject.balance }.by(-1)
     end
-    it 'will raise an error if maximum card value is reached' do
-      message = "Card limit of £#{described_class::MAXIMUM_BALANCE} has been reached."
-      expect{ subject.top_up(described_class::MINIMUM_BALANCE) }.to raise_error message
-    end
-  end
-
-  it 'will raise error if balance is less than minimum fare' do
-    expect{ subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
-  end
-
-  context 'using a card' do
-    before do
-      subject.top_up(described_class::MINIMUM_BALANCE)
-      subject.touch_in(entry_station)
-    end
-    describe '#touch_in' do
-      it 'will set #in_journey? to true' do
-        expect(subject.touch_in(entry_station)).to eq true
-      end
-
-      it 'will raise an error is Insufficient funds' do
-        subject.touch_out(exit_station)
-        expect{ subject.touch_in(entry_station) }.to raise_error "Insufficient funds"
-      end
-    end
-
-    describe '#touch_out' do
-      it 'will set #in_journey? to false' do
-        expect(subject.touch_out(exit_station)).to eq false
-      end
-      it 'a single journey will reduce balance by minimum fare' do
-        expect {subject.touch_out(exit_station)}.to change {subject.balance}.by(-described_class::MINIMUM_FARE)
-      end
-
-      it 'will add a journey to the history' do
-       subject.touch_out(exit_station)
-       expect(subject.history).not_to be_empty
-    end
-  end
-end
-
-  context 'incorrect card usage' do
-    let(:fare) { described_class::PENALTY_FARE + described_class::MINIMUM_FARE }
-    before do
-      subject.top_up(described_class::MINIMUM_BALANCE)
-    end
-    it 'will deduct a penalty if user touches in twice' do
-      subject.touch_in(entry_station)
-      expect {subject.touch_in(entry_station)}.to change {subject.balance}.by(-fare)
-    end
-    it 'will deduct a penalty if user touches out twice' do
-      subject.touch_out(exit_station)
-      expect {subject.touch_out(exit_station)}.to change {subject.balance}.by(-fare)
+    it 'charges a penlty fare if touched out twice' do
+      subject.touch_out(entry)
+      expect{ subject.touch_out(exit) }.to change{ subject.balance }.by(-6)
     end
   end
 end

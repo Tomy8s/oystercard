@@ -16,7 +16,7 @@ class Journey
       PENALTY_FARE
     else
       MINIMUM_FARE
-    endi
+    end
   end
 
 end
