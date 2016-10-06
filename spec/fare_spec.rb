@@ -1,3 +1,4 @@
+=begin
 require 'fare'
 require 'oystercard'
 require 'journey'
@@ -39,3 +40,4 @@ end
 
 
 end
+=end

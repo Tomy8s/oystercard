@@ -1,4 +1,5 @@
 require_relative 'oystercard'
+require_relative 'journey'
 
 class Fare
 
@@ -13,9 +14,9 @@ class Fare
 
   def fare
     if @current_fare.entry_station == nil || @current_fare.exit_station == nil
-      Oystercard::MINIMUM_FARE
+      Journey::MINIMUM_FARE
     elsif calculate_fare == 0
-      Oystercard::MINIMUM_FARE
+      Journey::MINIMUM_FARE
     else
        calculate_fare
     end

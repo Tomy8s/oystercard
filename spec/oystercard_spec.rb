@@ -3,7 +3,8 @@ require 'oystercard'
 describe Oystercard do
 
 let(:entry) { double(:station) }
-let(:exit) { double(:station) }
+let(:exit)  { double(:station) }
+let(:complete_journey) {double(:journey, entry_station: entry, exit_station: exit )}
 
   describe '#initialize' do
     it 'starts with a balance of 0' do
@@ -47,4 +48,14 @@ let(:exit) { double(:station) }
       expect{ subject.touch_out(exit) }.to change{ subject.balance }.by(-6)
     end
   end
+
+  describe '#history' do
+    before do
+      subject.send(:log, complete_journey)
+    end
+    it 'should provide journey history' do
+      expect(subject.history).to include(complete_journey)
+    end
+  end
+
 end

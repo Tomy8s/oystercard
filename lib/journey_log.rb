@@ -1,13 +1,17 @@
 class JourneyLog
 
-  attr_reader :history
+  attr_reader :journey_history
 
   def initialize
-    @history = []
+    @journey_history = []
   end
 
-  def history(journey)
-    @history << journey
+  def log(journey)
+    @journey_history << journey
+  end
+
+  def journey_history
+    @journey_history.dup
   end
 
 end

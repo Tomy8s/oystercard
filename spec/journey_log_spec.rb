@@ -1,35 +1,43 @@
+
 require 'journey_log'
 
 describe JourneyLog do
-  subject(:journey_log) { described_class.new(:journey_log) }
-  #  describe '#initialize' do
 
-  #    it 'should accept one argument' do
-  #      expect(subject).to respond_to(:initialize).with(1).argument
-  #    end
-  #   end
+  let(:complete_journey) {double(:journey, entry_station: :Liverpool, exit_station: :Waterloo )}
+  let(:bad_journey)      {double(:journey, entry_station: nil, exit_station: :Waterloo)}
 
-    describe '#start' do
+  describe '#initialize' do
+   it 'starts with an empty array' do
+     expect(subject.journey_history).to be_empty
+   end
+  end
 
-      it 'should accept one argument' do
-        expect(subject).to respond_to(:start).with(1).argument
-      end
+  describe '#log' do
+   it 'should add a complete journey to the array' do
+     subject.log(complete_journey)
+     expect(subject.journey_history).to include complete_journey
+   end
+
+   it 'should add incomplete journeys to the array' do
+     subject.log(bad_journey)
+     expect(subject.journey_history).to include bad_journey
+   end
+
+   it 'should be able to add more than one journey' do
+     subject.log(bad_journey)
+     subject.log(complete_journey)
+     expect(subject.journey_history).to include(complete_journey, bad_journey)
+   end
+  end
+
+  describe '#journey_history' do
+    it 'should return a copy of @journey_history' do
+      subject.log(bad_journey)
+      subject.log(complete_journey)
+      subject.journey_history.pop
+      expect(subject.journey_history).to include(complete_journey, bad_journey)
     end
 
-    describe '#finish' do
-      it 'should acccept one argument' do
-       expect(subject).to respond_to(:finish).with(1).argument
-     end
-    end
+  end
 
-    describe '#journeys' do
-      it 'should return a list with one item for each journey taken' do
-        n = rand(10)
-        n.times do
-          subject.start(:start)
-          subject.finish(:finish)
-        end
-        expect(subject.journeys.length).to eq n
-      end
-    end
 end

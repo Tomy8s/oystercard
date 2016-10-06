@@ -34,17 +34,17 @@ class Oystercard
  end
 
  def history
-  @log.history
+  @log.journey_history
  end
 
  private
 
  def deduct(amount)
    @balance -= amount
-   log
+   log(@journey)
  end
 
- def log
-   @log.history(@journey)
+ def log(journey)
+   @log.log(journey)
  end
 end
