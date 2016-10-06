@@ -2,8 +2,8 @@ require 'oystercard'
 
 describe Oystercard do
 
-let(:entry) { double(:station) }
-let(:exit)  { double(:station) }
+let(:entry) { double(:station, name: :Central, zone: 1) }
+let(:exit)  { double(:station, name: :Nowhere, zone: 1) }
 let(:complete_journey) {double(:journey, entry_station: entry, exit_station: exit )}
 
   describe '#initialize' do

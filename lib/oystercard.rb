@@ -1,6 +1,7 @@
 require_relative 'journey'
 require_relative 'journey_log'
 require_relative 'station'
+require_relative 'fare'
 
 class Oystercard
 
@@ -21,7 +22,7 @@ class Oystercard
 
  def touch_in(station)
    fail 'Insufficient balance' if balance < Journey::MINIMUM_FARE
-   deduct(@journey.fare) if @touch_in == true
+   deduct(fare) if @touch_in == true
    @journey = Journey.new(station)
    @touch_in = true
  end
@@ -29,7 +30,7 @@ class Oystercard
  def touch_out(exit_station)
   @journey = Journey.new if @touch_in == false
   @journey.exit_station = exit_station
-  deduct(@journey.fare)
+  deduct(fare)
   @touch_in = false
  end
 
@@ -38,6 +39,11 @@ class Oystercard
  end
 
  private
+
+ def fare
+   fare = Fare.new(@journey)
+   fare.fare(@journey)
+ end
 
  def deduct(amount)
    @balance -= amount

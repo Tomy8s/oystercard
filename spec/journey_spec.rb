@@ -23,25 +23,22 @@ describe Journey do
     end
   end
 
-  describe '#fare' do
-    it 'gives MINIMUM_FARE if used correctly' do
-      subject.entry_station = entry_station
-      subject.exit_station = exit_station
-      expect(subject.fare).to eq described_class::MINIMUM_FARE
-    end
+#   describe '#fare' do
+#     it 'gives MINIMUM_FARE if used correctly' do
+#       subject.entry_station = entry_station
+#       subject.exit_station = exit_station
+#       expect(subject.fare).to eq described_class::MINIMUM_FARE
+#     end
 
-    it 'gives PENALTY_FARE if no entry station given' do
-      subject.entry_station = nil
-      subject.exit_station = exit_station
-      expect(subject.fare).to eq described_class::PENALTY_FARE
-    end
+#     it 'gives PENALTY_FARE if no entry station given' do
+#       subject.entry_station = nil
+#       subject.exit_station = exit_station
+#       expect(subject.fare).to eq described_class::PENALTY_FARE
+#     end
 
-    it 'gives PENALTY_FARE if no exit station given' do
-      subject.entry_station = entry_station
-      expect(subject.fare).to eq described_class::PENALTY_FARE
-    end
-
-
-  end
-
+#     it 'gives PENALTY_FARE if no exit station given' do
+#       subject.entry_station = entry_station
+#       expect(subject.fare).to eq described_class::PENALTY_FARE
+#     end
+    #  end
  end

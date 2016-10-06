@@ -12,20 +12,18 @@ class Fare
     @current_fare = current_journey
   end
 
-  def fare
-    if @current_fare.entry_station == nil || @current_fare.exit_station == nil
-      Journey::MINIMUM_FARE
-    elsif calculate_fare == 0
-      Journey::MINIMUM_FARE
+  def fare(current_fare)
+    if current_fare.entry_station.nil? || current_fare.exit_station.nil?
+      PENALTY_FARE
     else
        calculate_fare
     end
   end
 
-  private
+#   private
 
   def calculate_fare
-    (@current_fare.entry_station.zone - @current_fare.exit_station.zone).abs
+    MINIMUM_FARE + (@current_fare.entry_station.zone - @current_fare.exit_station.zone).abs
   end
 
 
