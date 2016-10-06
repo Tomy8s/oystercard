@@ -20,11 +20,9 @@ class Fare
     end
   end
 
-#   private
+  private
 
   def calculate_fare
     MINIMUM_FARE + (@current_fare.entry_station.zone - @current_fare.exit_station.zone).abs
   end
-
-
 end
