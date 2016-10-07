@@ -1,0 +1,9 @@
+require './lib/oystercard'
+s=Station.new(:bensensei, 1)
+s1=Station.new(:tadas,2)
+o=Oystercard.new
+o.top_up(90)
+o.touch_in(s)
+o
+o.touch_out(s1)
+o

@@ -9,7 +9,7 @@ describe Oystercard do
     it 'should check if there are empty lists of journeys' do
       expect(subject.journeys).to match_array([])
     end
-    
+
 describe '#touch_in' do
 
   let(:journey){ double(:journey, entry_station: entry_station, exit_station: exit_station) }
@@ -32,9 +32,7 @@ describe '#touch_out' do
   end
 
   it 'deducts the correct money after the journey' do
-    p subject.journeys
     expect { subject.touch_out(station) }.to change { subject.balance }.by (-Journey::PENALTY_FARE)
-    p subject.journeys
   end
 
 end
