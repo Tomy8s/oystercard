@@ -5,6 +5,10 @@ describe Journey do
   let(:station) { double :station, zone: 1 }
   subject {Journey.new(station)}
 
+#   it 'returns a journey when finished' do
+#    expect(subject.exit_station(station)).to eq subject
+#  end
+
   describe 'Initialization' do
     it 'has a default penalty fare' do
       expect(subject.fare).to eq Journey::PENALTY_FARE
@@ -13,10 +17,6 @@ describe Journey do
       expect(subject).not_to be_complete
     end
   end
-
-  it 'returns a journey when finished' do
-   expect(subject.finish(station)).to eq subject
- end
 
   context 'given an entry station' do
 
@@ -32,7 +32,7 @@ describe Journey do
       end
 
       it 'calculates a fare' do
-        expect(subject.calculate_fare).to eq 1
+        expect(subject.fare).to eq 1
       end
 
       it 'knows that a journey is complete' do

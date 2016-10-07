@@ -6,7 +6,7 @@ class Oystercard
   MAXIMUM_BALANCE = 90
   MINIMUM_BALANCE = 1
 
-attr_reader :balance, :entry_station, :exit_station, :in_journey, :journeys
+attr_reader :balance, :entry_station, :exit_station, :in_journey, :journeys, :current_journey
   def initialize
     @balance = 0
     @in_journey = false
@@ -27,7 +27,7 @@ attr_reader :balance, :entry_station, :exit_station, :in_journey, :journeys
   def touch_out(station)
     end_journey(station)
     deduct(@current_journey.fare)
-    @current_journey = nil
+    @in_journey = false
   end
 
 private
@@ -42,24 +42,21 @@ private
   end
 
   def new_journey(station)
-    if @in_journey == true
-      @current_journey.penalty_finish
+    if @in_journey
       deduct(@current_journey.fare)
       add_journey
-    else
-      @current_journey = Journey.new(station)
     end
+    @current_journey = Journey.new(station)
   end
 
   def end_journey(station)
-    if @in_journey == true
+    if @in_journey
       @current_journey.finish(station)
       add_journey
-      # @current_journey = nil
     else
-      @current_journey = (Journey.new).finish(station)
+      @current_journey = Journey.new
+      @current_journey.finish(station)
       add_journey
-      # @current_journey = nil
     end
   end
 end
