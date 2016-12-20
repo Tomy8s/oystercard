@@ -46,7 +46,8 @@ private
       deduct(@current_journey.fare)
       add_journey
     end
-    @current_journey = Journey.new(station)
+    @current_journey = JourneyLog.new
+    @current_journey.start(station)
   end
 
   def end_journey(station)
@@ -54,7 +55,7 @@ private
       @current_journey.finish(station)
       add_journey
     else
-      @current_journey = Journey.new
+      @current_journey = JourneyLog.new
       @current_journey.finish(station)
       add_journey
     end
